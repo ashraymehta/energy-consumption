@@ -1,4 +1,4 @@
-package com.zenhomes.electricitycounters;
+package com.zenhomes.energyconsumption;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
