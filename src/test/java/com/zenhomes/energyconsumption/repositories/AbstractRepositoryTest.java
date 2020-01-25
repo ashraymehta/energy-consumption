@@ -17,9 +17,7 @@ public abstract class AbstractRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        this.mongoTemplate.getCollectionNames().forEach((collection) -> {
-            this.mongoTemplate.remove(new Query(), collection);
-        });
+        this.mongoTemplate.getCollectionNames().forEach((collection) -> this.mongoTemplate.remove(new Query(), collection));
     }
 
 }
