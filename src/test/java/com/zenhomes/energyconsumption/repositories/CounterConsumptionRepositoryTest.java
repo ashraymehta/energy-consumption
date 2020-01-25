@@ -4,6 +4,9 @@ import com.zenhomes.energyconsumption.models.CounterConsumption;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 
@@ -13,7 +16,7 @@ import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-@DataMongoTest
+@DataMongoTest(includeFilters = @ComponentScan.Filter(Repository.class))
 class CounterConsumptionRepositoryTest extends AbstractRepositoryTest {
 
     @Autowired
@@ -26,9 +29,10 @@ class CounterConsumptionRepositoryTest extends AbstractRepositoryTest {
         final var savedCounterConsumption = counterConsumptionRepository.insert(counterConsumption);
 
         final var savedCounterConsumptionId = savedCounterConsumption.getId();
-        assertThat(counterConsumptionRepository.count(), is(equalTo(1L)));
-        assertThat(counterConsumptionRepository.findById(savedCounterConsumptionId).orElseThrow(),
-                is(equalTo(counterConsumption)));
+        final var countOfAllSavedCounterConsumptions = mongoTemplate.count(new Query(), CounterConsumption.class);
+        final var foundCounterConsumption = mongoTemplate.findById(savedCounterConsumptionId, CounterConsumption.class);
+        assertThat(countOfAllSavedCounterConsumptions, is(equalTo(1L)));
+        assertThat(foundCounterConsumption, is(equalTo(counterConsumption)));
     }
 
     @Test
@@ -42,4 +46,5 @@ class CounterConsumptionRepositoryTest extends AbstractRepositoryTest {
         assertThat(savedCounterConsumption.getCreatedAt(), is(greaterThanOrEqualTo(startTime)));
         assertThat(savedCounterConsumption.getCreatedAt(), is(lessThanOrEqualTo(endTime)));
     }
+
 }
