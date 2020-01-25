@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Import(JacksonConfiguration.class)
@@ -33,11 +34,13 @@ class CounterConsumptionControllerTest {
     @Test
     void shouldSaveCounterInformation() throws Exception {
         final var counterConsumption = new CounterConsumption("1", 1000D);
+        when(counterConsumptionService.createConsumptionRecord(counterConsumption)).thenReturn(counterConsumption);
 
         mockMvc.perform(post("/counter_callback")
                 .content(objectMapper.writeValueAsBytes(counterConsumption))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isCreated())
+                .andExpect(content().json(objectMapper.writeValueAsString(counterConsumption)));
 
         verify(counterConsumptionService, times(1)).createConsumptionRecord(counterConsumption);
     }
@@ -107,7 +110,7 @@ class CounterConsumptionControllerTest {
             mockMvc.perform(post("/counter_callback")
                     .content(objectMapper.writeValueAsBytes(counterConsumption))
                     .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isNoContent());
+                    .andExpect(status().isCreated());
 
             verify(counterConsumptionService, times(1)).createConsumptionRecord(counterConsumption);
         }

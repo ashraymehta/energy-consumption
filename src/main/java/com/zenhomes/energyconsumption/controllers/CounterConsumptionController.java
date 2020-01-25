@@ -2,6 +2,7 @@ package com.zenhomes.energyconsumption.controllers;
 
 import com.zenhomes.energyconsumption.models.CounterConsumption;
 import com.zenhomes.energyconsumption.services.CounterConsumptionService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,9 +20,9 @@ public class CounterConsumptionController {
     }
 
     @PostMapping("counter_callback")
-    public ResponseEntity<Void> createCounterConsumption(@RequestBody @Valid CounterConsumption counterConsumption) {
-        counterConsumptionService.createConsumptionRecord(counterConsumption);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<CounterConsumption> createCounterConsumption(@RequestBody @Valid CounterConsumption counterConsumption) {
+        final var createdConsumption = counterConsumptionService.createConsumptionRecord(counterConsumption);
+        return new ResponseEntity<>(createdConsumption, HttpStatus.CREATED);
     }
 
 }
