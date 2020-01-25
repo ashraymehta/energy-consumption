@@ -1,16 +1,15 @@
 package com.zenhomes.energyconsumption.controllers;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zenhomes.energyconsumption.configuration.JacksonConfiguration;
 import com.zenhomes.energyconsumption.models.CounterConsumption;
 import com.zenhomes.energyconsumption.services.CounterConsumptionService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -19,6 +18,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Import(JacksonConfiguration.class)
 @WebMvcTest(CounterConsumptionController.class)
 class CounterConsumptionControllerTest {
 
@@ -30,11 +30,6 @@ class CounterConsumptionControllerTest {
 
     @MockBean
     private CounterConsumptionService counterConsumptionService;
-
-    @BeforeEach
-    void setUp() {
-        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-    }
 
     @Test
     void shouldSaveCounterInformation() throws Exception {
@@ -49,11 +44,15 @@ class CounterConsumptionControllerTest {
     }
 
     @Nested
+    @Import(JacksonConfiguration.class)
     @WebMvcTest(controllers = CounterConsumptionController.class)
     class CounterConsumptionControllerValidationsTest {
 
         @Autowired
         private MockMvc mockMvc;
+
+        @Autowired
+        private ObjectMapper objectMapper;
 
         @MockBean
         private CounterConsumptionService counterConsumptionService;
@@ -114,4 +113,5 @@ class CounterConsumptionControllerTest {
             verify(counterConsumptionService, times(1)).createConsumptionRecord(counterConsumption);
         }
     }
+
 }
