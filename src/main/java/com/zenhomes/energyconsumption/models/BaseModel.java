@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
 
@@ -16,6 +17,7 @@ public class BaseModel {
     }
 
     @CreatedDate
+    @Field(DatabaseFields.CREATED_AT)
     private Date createdAt;
 
     @Override
@@ -30,5 +32,9 @@ public class BaseModel {
 
     public Date getCreatedAt() {
         return createdAt;
+    }
+
+    public interface DatabaseFields {
+        String CREATED_AT = "createdAt";
     }
 }

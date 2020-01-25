@@ -20,4 +20,8 @@ public class CounterConsumption extends BaseModel {
         this.amount = amount;
     }
 
+    public interface DatabaseFields {
+        String COUNTER_ID = "counterId";
+        String AMOUNT = "amount";
+    }
 }

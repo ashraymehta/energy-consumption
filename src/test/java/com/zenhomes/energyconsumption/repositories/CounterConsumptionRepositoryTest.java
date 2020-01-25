@@ -11,8 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Date;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 
@@ -24,7 +23,7 @@ class CounterConsumptionRepositoryTest extends AbstractRepositoryTest {
 
     @Test
     void shouldInsertCounterConsumption() {
-        final var counterConsumption = new CounterConsumption("counterId", 1000D);
+        final var counterConsumption = new CounterConsumption("counterId", 1_000D);
 
         final var savedCounterConsumption = counterConsumptionRepository.insert(counterConsumption);
 
@@ -37,7 +36,7 @@ class CounterConsumptionRepositoryTest extends AbstractRepositoryTest {
 
     @Test
     void shouldAutomaticallyAuditCreationDate() {
-        final var counterConsumption = new CounterConsumption("counterId", 1000D);
+        final var counterConsumption = new CounterConsumption("counterId", 1_000D);
 
         final var startTime = new Date();
         final var savedCounterConsumption = counterConsumptionRepository.insert(counterConsumption);
@@ -47,4 +46,26 @@ class CounterConsumptionRepositoryTest extends AbstractRepositoryTest {
         assertThat(savedCounterConsumption.getCreatedAt(), is(lessThanOrEqualTo(endTime)));
     }
 
+    @Test
+    void shouldFindSumOfConsumptionForAllCountersFromTheProvidedTimePeriod() {
+//       given
+        counterConsumptionRepository.insert(new CounterConsumption("not-be-considered-counter", 10_000.21));
+
+        final var startDate = new Date();
+
+        counterConsumptionRepository.insert(new CounterConsumption("1", 500.01));
+        counterConsumptionRepository.insert(new CounterConsumption("1", 499.99));
+        counterConsumptionRepository.insert(new CounterConsumption("2", 129.99));
+
+//      when
+        final var consumptionPerCounter = counterConsumptionRepository.findConsumptionPerCounter(startDate);
+
+//      then
+        assertThat(consumptionPerCounter, hasSize(2));
+
+        final var consumptionOfFirstCounter = consumptionPerCounter.get(0);
+        final var consumptionOfSecondCounter = consumptionPerCounter.get(1);
+        assertThat(consumptionOfFirstCounter.getTotal(), is(equalTo(1_000.00)));
+        assertThat(consumptionOfSecondCounter.getTotal(), is(equalTo(129.99)));
+    }
 }
