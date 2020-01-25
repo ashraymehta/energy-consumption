@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 public class CounterConsumptionController {
 
@@ -17,7 +19,7 @@ public class CounterConsumptionController {
     }
 
     @PostMapping("counter_callback")
-    public ResponseEntity<Void> createCounterConsumption(@RequestBody CounterConsumption counterConsumption) {
+    public ResponseEntity<Void> createCounterConsumption(@RequestBody @Valid CounterConsumption counterConsumption) {
         counterConsumptionService.createConsumptionRecord(counterConsumption);
         return ResponseEntity.noContent().build();
     }

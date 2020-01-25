@@ -17,7 +17,7 @@ class CounterConsumptionRepositoryTest extends AbstractRepositoryTest {
 
     @Test
     void shouldInsertCounterConsumption() {
-        final var counterConsumption = new CounterConsumption("counterId", 1000);
+        final var counterConsumption = new CounterConsumption("counterId", 1000D);
 
         final var savedCounterConsumption = counterConsumptionRepository.insert(counterConsumption);
 

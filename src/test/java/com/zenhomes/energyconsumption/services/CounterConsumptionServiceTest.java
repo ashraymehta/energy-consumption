@@ -21,7 +21,7 @@ class CounterConsumptionServiceTest {
 
     @Test
     void shouldInvokeRepositoryToCreateCounterConsumption() {
-        final var counterConsumptionToBeSaved = new CounterConsumption("1", 2000);
+        final var counterConsumptionToBeSaved = new CounterConsumption("1", 2000D);
 
         counterConsumptionService.createConsumptionRecord(counterConsumptionToBeSaved);
 

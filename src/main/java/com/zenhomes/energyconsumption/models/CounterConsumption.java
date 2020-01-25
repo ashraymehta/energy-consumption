@@ -1,11 +1,20 @@
 package com.zenhomes.energyconsumption.models;
 
-public class CounterConsumption extends BaseModel {
-    private final String counterId;
-    private final double amount;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 
-    public CounterConsumption(String counterId, double amount) {
+public class CounterConsumption extends BaseModel {
+
+    @NotNull
+    private final String counterId;
+
+    @NotNull
+    @PositiveOrZero
+    private final Double amount;
+
+    public CounterConsumption(String counterId, Double amount) {
         this.counterId = counterId;
         this.amount = amount;
     }
+
 }
