@@ -1,32 +1,19 @@
 package com.zenhomes.energyconsumption.repositories;
 
 import com.zenhomes.energyconsumption.models.CounterConsumption;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Query;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @DataMongoTest
-class CounterConsumptionRepositoryTest {
+class CounterConsumptionRepositoryTest extends AbstractRepositoryTest {
 
     @Autowired
     private CounterConsumptionRepository counterConsumptionRepository;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
-
-    @BeforeEach
-    void setUp() {
-        this.mongoTemplate.getCollectionNames().forEach((collection) -> {
-            this.mongoTemplate.remove(new Query(), collection);
-        });
-    }
 
     @Test
     void shouldInsertCounterConsumption() {
