@@ -1,8 +1,11 @@
 package com.zenhomes.energyconsumption.models;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
+@Document
 public class CounterConsumption extends BaseModel {
 
     @NotNull

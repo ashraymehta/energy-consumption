@@ -2,7 +2,10 @@ package com.zenhomes.energyconsumption.models;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+
+import java.util.Date;
 
 public class BaseModel {
     @Id
@@ -12,6 +15,9 @@ public class BaseModel {
         return id;
     }
 
+    @CreatedDate
+    private Date createdAt;
+
     @Override
     public boolean equals(Object o) {
         return EqualsBuilder.reflectionEquals(this, o);
@@ -20,5 +26,9 @@ public class BaseModel {
     @Override
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
     }
 }
