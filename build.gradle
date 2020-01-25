@@ -27,3 +27,11 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+jacocoTestReport {
+    reports {
+        html.enabled = true
+    }
+}
+
+check.dependsOn(jacocoTestReport)
