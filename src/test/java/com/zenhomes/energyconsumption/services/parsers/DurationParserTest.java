@@ -1,5 +1,6 @@
 package com.zenhomes.energyconsumption.services.parsers;
 
+import com.zenhomes.energyconsumption.exceptions.ValidationException;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -7,6 +8,7 @@ import java.time.Duration;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DurationParserTest {
 
@@ -29,5 +31,11 @@ class DurationParserTest {
     void shouldParseDurationInHoursAndMinutes() {
         assertThat(durationParser.parse("2H30M"), is(equalTo(Duration.ofHours(2).plus(Duration.ofMinutes(30)))));
         assertThat(durationParser.parse("2h30m"), is(equalTo(Duration.ofHours(2).plus(Duration.ofMinutes(30)))));
+    }
+
+    @Test
+    void shouldThrowValidationExceptionIfTheFormatIsIncorrect() {
+        assertThrows(ValidationException.class, () -> durationParser.parse(""));
+        assertThrows(ValidationException.class, () -> durationParser.parse("something-totally-unrelated"));
     }
 }

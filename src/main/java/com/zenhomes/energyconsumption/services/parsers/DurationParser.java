@@ -1,5 +1,6 @@
 package com.zenhomes.energyconsumption.services.parsers;
 
+import com.zenhomes.energyconsumption.exceptions.ValidationException;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -10,6 +11,10 @@ public class DurationParser {
     private static final String TIME_PREFIX_ISO_8601 = "T";
 
     public Duration parse(String timeDurationInText) {
-        return Duration.parse(PERIOD_PREFIX_ISO_8601 + TIME_PREFIX_ISO_8601 + timeDurationInText);
+        try {
+            return Duration.parse(PERIOD_PREFIX_ISO_8601 + TIME_PREFIX_ISO_8601 + timeDurationInText);
+        } catch (RuntimeException ex) {
+            throw new ValidationException(ex);
+        }
     }
 }

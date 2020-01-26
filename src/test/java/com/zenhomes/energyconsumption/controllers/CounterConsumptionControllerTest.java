@@ -3,6 +3,7 @@ package com.zenhomes.energyconsumption.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zenhomes.energyconsumption.configuration.ClockTestConfiguration;
 import com.zenhomes.energyconsumption.configuration.JacksonConfiguration;
+import com.zenhomes.energyconsumption.exceptions.ValidationException;
 import com.zenhomes.energyconsumption.models.CounterConsumption;
 import com.zenhomes.energyconsumption.models.dto.ConsumptionReportResponse;
 import com.zenhomes.energyconsumption.models.dto.VillageConsumption;
@@ -141,7 +142,7 @@ class CounterConsumptionControllerTest {
         }
 
         @Test
-        void shouldReturnBehaveNormallyIfAmountIsZeroInTheRequestBody() throws Exception {
+        void shouldBehaveNormallyIfAmountIsZeroInTheRequestBody() throws Exception {
             final var counterConsumption = new CounterConsumption("1", 0D);
 
             mockMvc.perform(post("/counter_callback")
@@ -150,6 +151,25 @@ class CounterConsumptionControllerTest {
                     .andExpect(status().isCreated());
 
             verify(counterConsumptionService, times(1)).createConsumptionRecord(counterConsumption);
+        }
+
+        @Test
+        void shouldReturnBadRequestIfDurationIsNotPresentInConsumptionReportRequest() throws Exception {
+            mockMvc.perform(get("/consumption_report"))
+                    .andExpect(status().isBadRequest());
+
+            verify(counterConsumptionService, never()).calculateVillageConsumptions(any());
+        }
+
+        @Test
+        void shouldReturnBadRequestIfDurationIsInvalidInConsumptionReportRequest() throws Exception {
+            final var invalidDuration = "something-unexpected";
+            when(durationParser.parse(invalidDuration)).thenThrow(new ValidationException());
+
+            mockMvc.perform(get("/consumption_report").queryParam("duration", invalidDuration))
+                    .andExpect(status().isBadRequest());
+
+            verify(counterConsumptionService, never()).calculateVillageConsumptions(any());
         }
     }
 
