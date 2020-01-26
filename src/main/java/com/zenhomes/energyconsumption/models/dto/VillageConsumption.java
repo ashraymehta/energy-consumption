@@ -1,6 +1,8 @@
 package com.zenhomes.energyconsumption.models.dto;
 
-public class VillageConsumption {
+import com.zenhomes.energyconsumption.models.BaseModel;
+
+public class VillageConsumption extends BaseModel {
     private final String villageName;
     private final Double consumption;
 

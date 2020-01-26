@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Service
 public class CounterConsumptionService {
@@ -25,8 +26,12 @@ public class CounterConsumptionService {
     }
 
     public Collection<VillageConsumption> calculateVillageConsumptions(Date from) {
-        final var counterConsumptionStatistics = counterConsumptionRepository.findCounterConsumptionStatistics(from);
-        counterConsumptionStatistics.forEach(consumption -> counterGateway.getCounter(consumption.getCounterId()));
-        return null;
+        final var allCounterConsumptionStatistics = counterConsumptionRepository.findCounterConsumptionStatistics(from);
+        return allCounterConsumptionStatistics.stream()
+                .map(counterConsumptionStatistics -> {
+                    final var counterId = counterConsumptionStatistics.getCounterId();
+                    final var counter = counterGateway.getCounter(counterId);
+                    return new VillageConsumption(counter.getVillageName(), counterConsumptionStatistics.getEnergyConsumed());
+                }).collect(Collectors.toSet());
     }
 }

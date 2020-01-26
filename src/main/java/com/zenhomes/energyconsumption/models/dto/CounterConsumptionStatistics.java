@@ -1,6 +1,8 @@
 package com.zenhomes.energyconsumption.models.dto;
 
-public class CounterConsumptionStatistics {
+import com.zenhomes.energyconsumption.models.BaseModel;
+
+public class CounterConsumptionStatistics extends BaseModel {
     private final String counterId;
     private final Double energyConsumed;
 

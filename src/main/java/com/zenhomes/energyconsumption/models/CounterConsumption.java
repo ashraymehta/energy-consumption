@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
 @Document
-public class CounterConsumption extends BaseModel {
+public class CounterConsumption extends BaseDocument {
 
     @NotNull
     private final String counterId;
