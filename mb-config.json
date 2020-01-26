@@ -1,0 +1,129 @@
+{
+  "imposters": [
+    {
+      "port": 12001,
+      "protocol": "http",
+      "_links": {
+        "self": {
+          "href": "http://localhost:2525/imposters/12001"
+        }
+      },
+      "stubs": [
+        {
+          "responses": [
+            {
+              "is": {
+                "statusCode": 200,
+                "body": {
+                  "id": "1",
+                  "village_name": "Villarriba"
+                },
+                "headers": {
+                  "Content-Type": "application/json"
+                }
+              }
+            }
+          ],
+          "predicates": [
+            {
+              "equals": {
+                "query": {
+                  "id": "1"
+                },
+                "method": "GET"
+              }
+            }
+          ]
+        },
+        {
+          "responses": [
+            {
+              "is": {
+                "statusCode": 200,
+                "body": {
+                  "id": "2",
+                  "village_name": "Villabajo"
+                },
+                "headers": {
+                  "Content-Type": "application/json"
+                }
+              }
+            }
+          ],
+          "predicates": [
+            {
+              "equals": {
+                "query": {
+                  "id": "2"
+                },
+                "method": "GET"
+              }
+            }
+          ]
+        },
+        {
+          "responses": [
+            {
+              "is": {
+                "statusCode": 200,
+                "body": {
+                  "id": "3",
+                  "village_name": "Villabajo"
+                },
+                "headers": {
+                  "Content-Type": "application/json"
+                }
+              }
+            }
+          ],
+          "predicates": [
+            {
+              "equals": {
+                "query": {
+                  "id": "3"
+                },
+                "method": "GET"
+              }
+            }
+          ]
+        },
+        {
+          "responses": [
+            {
+              "is": {
+                "statusCode": 200,
+                "body": {
+                  "id": "4",
+                  "village_name": "Villarriba"
+                },
+                "headers": {
+                  "Content-Type": "application/json"
+                }
+              }
+            }
+          ],
+          "predicates": [
+            {
+              "equals": {
+                "query": {
+                  "id": "4"
+                },
+                "method": "GET"
+              }
+            }
+          ]
+        },
+        {
+          "responses": [
+            {
+              "is": {
+                "statusCode": 404
+              }
+            }
+          ],
+          "predicates": []
+        }
+      ]
+    }
+  ]
+}
