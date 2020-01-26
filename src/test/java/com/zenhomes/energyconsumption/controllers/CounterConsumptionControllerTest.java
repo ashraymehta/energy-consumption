@@ -3,6 +3,9 @@ package com.zenhomes.energyconsumption.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zenhomes.energyconsumption.configuration.JacksonConfiguration;
 import com.zenhomes.energyconsumption.models.CounterConsumption;
+import com.zenhomes.energyconsumption.models.dto.ConsumptionReportResponse;
+import com.zenhomes.energyconsumption.models.dto.VillageConsumption;
+import com.zenhomes.energyconsumption.models.dto.VillageConsumptions;
 import com.zenhomes.energyconsumption.services.CounterConsumptionService;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -14,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,6 +47,22 @@ class CounterConsumptionControllerTest {
                 .andExpect(content().json(objectMapper.writeValueAsString(counterConsumption)));
 
         verify(counterConsumptionService, times(1)).createConsumptionRecord(counterConsumption);
+    }
+
+    @Test
+    void shouldProvideConsumptionReport() throws Exception {
+        final var villageConsumptions = VillageConsumptions.of(
+                new VillageConsumption("aVillage", 10.0),
+                new VillageConsumption("anotherVillage", 14.0)
+        );
+        when(counterConsumptionService.calculateVillageConsumptions(any())).thenReturn(villageConsumptions);
+        final var expectedResponseBody = objectMapper.writeValueAsString(new ConsumptionReportResponse(villageConsumptions));
+
+        mockMvc.perform(get("/consumption_report"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedResponseBody));
+
+        verify(counterConsumptionService, times(1)).calculateVillageConsumptions(any());
     }
 
     @Nested
