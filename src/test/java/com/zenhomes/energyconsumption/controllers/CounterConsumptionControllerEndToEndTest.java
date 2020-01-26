@@ -67,7 +67,7 @@ class CounterConsumptionControllerEndToEndTest extends AbstractRepositoryTest {
         createCounterConsumption(new CounterConsumption(aCounterId, 100.0));
         createCounterConsumption(new CounterConsumption(aCounterId, 200.0));
         createCounterConsumption(new CounterConsumption(anotherCounterId, 400.0));
-        createCounterConsumption(new CounterConsumption(yetAnotherCounterId, 500.0));
+        createCounterConsumption(new CounterConsumption(yetAnotherCounterId, 300.0));
 
         when(counterGateway.getCounter(aCounterId)).thenReturn(new Counter(aCounterId, oneVillage));
         when(counterGateway.getCounter(anotherCounterId)).thenReturn(new Counter(anotherCounterId, anotherVillage));
@@ -79,7 +79,7 @@ class CounterConsumptionControllerEndToEndTest extends AbstractRepositoryTest {
 
 //      then
         final var expectedVillageConsumptions = VillageConsumptions.of(
-                new VillageConsumption(oneVillage, 800.0),
+                new VillageConsumption(oneVillage, 600.0),
                 new VillageConsumption(anotherVillage, 400.0)
         );
         final var expectedConsumptionReportResponse = objectMapper.valueToTree(

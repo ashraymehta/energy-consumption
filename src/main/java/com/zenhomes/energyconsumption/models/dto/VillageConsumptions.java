@@ -1,12 +1,12 @@
 package com.zenhomes.energyconsumption.models.dto;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toMap;
 
-public class VillageConsumptions extends HashSet<VillageConsumption> {
+public class VillageConsumptions extends ArrayList<VillageConsumption> {
 
     public VillageConsumptions() {
     }
