@@ -30,7 +30,6 @@ public class CounterConsumptionRepository {
                 .sum(CounterConsumption.DatabaseFields.AMOUNT).as(CounterConsumptionStatistics.ClassFields.ENERGY_CONSUMED)
                 .first(CounterConsumption.DatabaseFields.COUNTER_ID).as(CounterConsumptionStatistics.ClassFields.COUNTER_ID));
 
-//      TODO - Explore using Jackson to form the CounterConsumptionStatistics
         return this.mongoTemplate.aggregate(aggregation, CounterConsumption.class, CounterConsumptionStatistics.class)
                 .getMappedResults();
     }

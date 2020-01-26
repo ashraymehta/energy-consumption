@@ -3,13 +3,11 @@ package com.zenhomes.energyconsumption.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zenhomes.energyconsumption.configuration.ClockTestConfiguration;
 import com.zenhomes.energyconsumption.configuration.JacksonConfiguration;
-import com.zenhomes.energyconsumption.exceptions.ValidationException;
 import com.zenhomes.energyconsumption.models.CounterConsumption;
 import com.zenhomes.energyconsumption.models.dto.ConsumptionReportResponse;
 import com.zenhomes.energyconsumption.models.dto.VillageConsumption;
 import com.zenhomes.energyconsumption.models.dto.VillageConsumptions;
 import com.zenhomes.energyconsumption.services.CounterConsumptionService;
-import com.zenhomes.energyconsumption.services.parsers.DurationParser;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Date;
-import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
 import static com.zenhomes.energyconsumption.configuration.ClockTestConfiguration.FIXED_INSTANT;
@@ -39,9 +36,6 @@ class CounterConsumptionControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @MockBean
-    private DurationParser durationParser;
 
     @MockBean
     private CounterConsumptionService counterConsumptionService;
@@ -70,7 +64,6 @@ class CounterConsumptionControllerTest {
         final var expectedReportStartDate = Date.from(FIXED_INSTANT.minus(24, ChronoUnit.HOURS));
         final var expectedResponseBody = objectMapper.writeValueAsString(new ConsumptionReportResponse(villageConsumptions));
 
-        when(durationParser.parse(durationQueryParameter)).thenReturn(Duration.ofHours(24));
         when(counterConsumptionService.calculateVillageConsumptions(expectedReportStartDate)).thenReturn(villageConsumptions);
 
         mockMvc.perform(get("/consumption_report").queryParam("duration", durationQueryParameter))
@@ -90,9 +83,6 @@ class CounterConsumptionControllerTest {
 
         @Autowired
         private ObjectMapper objectMapper;
-
-        @MockBean
-        private DurationParser durationParser;
 
         @MockBean
         private CounterConsumptionService counterConsumptionService;
@@ -164,7 +154,6 @@ class CounterConsumptionControllerTest {
         @Test
         void shouldReturnBadRequestIfDurationIsInvalidInConsumptionReportRequest() throws Exception {
             final var invalidDuration = "something-unexpected";
-            when(durationParser.parse(invalidDuration)).thenThrow(new ValidationException());
 
             mockMvc.perform(get("/consumption_report").queryParam("duration", invalidDuration))
                     .andExpect(status().isBadRequest());

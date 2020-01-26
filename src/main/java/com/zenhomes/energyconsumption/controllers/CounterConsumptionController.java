@@ -3,27 +3,23 @@ package com.zenhomes.energyconsumption.controllers;
 import com.zenhomes.energyconsumption.models.CounterConsumption;
 import com.zenhomes.energyconsumption.models.dto.ConsumptionReportResponse;
 import com.zenhomes.energyconsumption.services.CounterConsumptionService;
-import com.zenhomes.energyconsumption.services.parsers.DurationParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.Clock;
+import java.time.Duration;
 import java.util.Date;
 
 @RestController
 public class CounterConsumptionController {
 
     private final CounterConsumptionService counterConsumptionService;
-    private final DurationParser durationParser;
     private final Clock clock;
 
-    public CounterConsumptionController(CounterConsumptionService counterConsumptionService,
-                                        DurationParser durationParser,
-                                        Clock clock) {
+    public CounterConsumptionController(CounterConsumptionService counterConsumptionService, Clock clock) {
         this.counterConsumptionService = counterConsumptionService;
-        this.durationParser = durationParser;
         this.clock = clock;
     }
 
@@ -34,8 +30,7 @@ public class CounterConsumptionController {
     }
 
     @GetMapping("consumption_report")
-    public ResponseEntity<ConsumptionReportResponse> getConsumptionReport(@RequestParam("duration") String durationInText) {
-        final var duration = durationParser.parse(durationInText);
+    public ResponseEntity<ConsumptionReportResponse> getConsumptionReport(@RequestParam("duration") Duration duration) {
         final var reportStartDate = Date.from(clock.instant().minus(duration));
 
         final var villageConsumptions = counterConsumptionService.calculateVillageConsumptions(reportStartDate);
