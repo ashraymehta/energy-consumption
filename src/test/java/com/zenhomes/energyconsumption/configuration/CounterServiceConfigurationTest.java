@@ -15,6 +15,6 @@ class CounterServiceConfigurationTest {
 
     @Test
     void shouldGetCounterServiceBaseUrl() {
-        assertThat(counterServiceConfiguration.getBaseUrl(), is("https://localhost:3000/"));
+        assertThat(counterServiceConfiguration.getBaseUrl(), is("http://localhost:12001/"));
     }
 }
