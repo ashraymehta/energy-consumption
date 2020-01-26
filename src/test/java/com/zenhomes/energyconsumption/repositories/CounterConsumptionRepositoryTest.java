@@ -47,15 +47,17 @@ class CounterConsumptionRepositoryTest extends AbstractRepositoryTest {
     }
 
     @Test
-    void shouldFindSumOfConsumptionForAllCountersFromTheProvidedTimePeriod() {
+    void shouldFindSumOfConsumptionForAllCountersFromTheProvidedTimePeriod() throws InterruptedException {
 //       given
         counterConsumptionRepository.insert(new CounterConsumption("not-be-considered-counter", 10_000.21));
 
         final var startDate = new Date();
 
-        counterConsumptionRepository.insert(new CounterConsumption("1", 500.01));
-        counterConsumptionRepository.insert(new CounterConsumption("1", 499.99));
-        counterConsumptionRepository.insert(new CounterConsumption("2", 129.99));
+        final var aCounterId = "1";
+        final var anotherCounterId = "2";
+        counterConsumptionRepository.insert(new CounterConsumption(aCounterId, 500.01));
+        counterConsumptionRepository.insert(new CounterConsumption(aCounterId, 499.99));
+        counterConsumptionRepository.insert(new CounterConsumption(anotherCounterId, 129.99));
 
 //      when
         final var counterConsumptionStatistics = counterConsumptionRepository.findCounterConsumptionStatistics(startDate);
@@ -63,9 +65,13 @@ class CounterConsumptionRepositoryTest extends AbstractRepositoryTest {
 //      then
         assertThat(counterConsumptionStatistics, hasSize(2));
 
-        final var consumptionOfFirstCounter = counterConsumptionStatistics.get(0);
-        final var consumptionOfSecondCounter = counterConsumptionStatistics.get(1);
-        assertThat(consumptionOfFirstCounter.getEnergyConsumed(), is(equalTo(1_000.00)));
-        assertThat(consumptionOfSecondCounter.getEnergyConsumed(), is(equalTo(129.99)));
+        final var aConsumptionStatistic = counterConsumptionStatistics.stream()
+                .filter(c -> c.getCounterId().equals(aCounterId))
+                .findFirst().orElseThrow();
+        final var anotherConsumptionStatistic = counterConsumptionStatistics.stream()
+                .filter(c -> c.getCounterId().equals(anotherCounterId))
+                .findFirst().orElseThrow();
+        assertThat(aConsumptionStatistic.getEnergyConsumed(), is(equalTo(1_000.00)));
+        assertThat(anotherConsumptionStatistic.getEnergyConsumed(), is(equalTo(129.99)));
     }
 }
