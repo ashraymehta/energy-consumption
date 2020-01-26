@@ -15,13 +15,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.io.IOException;
-import java.nio.file.Files;
-
+import static com.zenhomes.energyconsumption.utils.ResourceUtil.readTestResource;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -92,10 +89,6 @@ class CounterConsumptionControllerEndToEndTest extends AbstractRepositoryTest {
 
     private void createCounterConsumption(CounterConsumption counterConsumption) {
         testRestTemplate.postForObject(getBaseUrl() + "counter_callback", counterConsumption, CounterConsumption.class);
-    }
-
-    private byte[] readTestResource(String resourceLocation) throws IOException {
-        return Files.readAllBytes(new ClassPathResource(resourceLocation).getFile().toPath());
     }
 
     private String getBaseUrl() {
