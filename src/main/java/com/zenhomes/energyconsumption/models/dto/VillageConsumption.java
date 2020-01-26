@@ -10,4 +10,12 @@ public class VillageConsumption extends BaseModel {
         this.villageName = villageName;
         this.consumption = consumption;
     }
+
+    public String getVillageName() {
+        return villageName;
+    }
+
+    public Double getConsumption() {
+        return consumption;
+    }
 }

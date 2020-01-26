@@ -14,11 +14,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CounterConsumptionServiceTest {
@@ -34,7 +34,7 @@ class CounterConsumptionServiceTest {
 
     @Test
     void shouldInvokeRepositoryToCreateCounterConsumption() {
-        final var counterConsumptionToBeSaved = new CounterConsumption("1", 2000D);
+        final var counterConsumptionToBeSaved = new CounterConsumption("1", 2000.00);
 
         counterConsumptionService.createConsumptionRecord(counterConsumptionToBeSaved);
 
@@ -43,23 +43,55 @@ class CounterConsumptionServiceTest {
 
     @Test
     void shouldCalculateVillageConsumptionsForEachCounter() {
+//      given
         final var fromDate = new Date();
         final var aCounterId = "1";
         final var anotherCounterId = "2";
         final var aVillageName = "Villarriba";
         final var anotherVillageName = "Villabajo";
         final var counterConsumptionStatistics = List.of(
-                new CounterConsumptionStatistics(aCounterId, 2000D),
-                new CounterConsumptionStatistics(anotherCounterId, 5000D)
+                new CounterConsumptionStatistics(aCounterId, 2000.00),
+                new CounterConsumptionStatistics(anotherCounterId, 5000.00)
         );
         when(counterConsumptionRepository.findCounterConsumptionStatistics(fromDate)).thenReturn(counterConsumptionStatistics);
         when(counterGateway.getCounter(aCounterId)).thenReturn(new Counter(aCounterId, aVillageName));
         when(counterGateway.getCounter(anotherCounterId)).thenReturn(new Counter(anotherCounterId, anotherVillageName));
 
+//      when
         final var villageConsumptions = counterConsumptionService.calculateVillageConsumptions(fromDate);
 
-        final var expectedVillageConsumptions = Set.of(new VillageConsumption(aVillageName, 2000D),
-                new VillageConsumption(anotherVillageName, 5000D));
-        assertThat(villageConsumptions, equalTo(expectedVillageConsumptions));
+//      then
+        final var anExpectedVillageConsumption = new VillageConsumption(aVillageName, 2000.00);
+        final var anotherExpectedVillageConsumption = new VillageConsumption(anotherVillageName, 5000.00);
+        assertThat(villageConsumptions, containsInAnyOrder(anExpectedVillageConsumption,
+                anotherExpectedVillageConsumption));
+    }
+
+    @Test
+    void shouldAggregateConsumptionFromMultipleCountersForTheSameVillage() {
+//      given
+        final var fromDate = new Date();
+        final var aCounterId = "1";
+        final var anotherCounterId = "2";
+        final var aVillageName = "Villarriba";
+        final var anotherVillageName = "Villabajo";
+        final var counterConsumptionStatistics = List.of(
+                new CounterConsumptionStatistics(aCounterId, 2000.00),
+                new CounterConsumptionStatistics(aCounterId, 1000.00),
+                new CounterConsumptionStatistics(aCounterId, 500.00),
+                new CounterConsumptionStatistics(anotherCounterId, 5000.00)
+        );
+        when(counterConsumptionRepository.findCounterConsumptionStatistics(fromDate)).thenReturn(counterConsumptionStatistics);
+        when(counterGateway.getCounter(aCounterId)).thenReturn(new Counter(aCounterId, aVillageName));
+        when(counterGateway.getCounter(anotherCounterId)).thenReturn(new Counter(anotherCounterId, anotherVillageName));
+
+//      when
+        final var villageConsumptions = counterConsumptionService.calculateVillageConsumptions(fromDate);
+
+//      then
+        final var anExpectedVillageConsumption = new VillageConsumption(aVillageName, 3500.00);
+        final var anotherExpectedVillageConsumption = new VillageConsumption(anotherVillageName, 5000.00);
+        assertThat(villageConsumptions, containsInAnyOrder(anExpectedVillageConsumption,
+                anotherExpectedVillageConsumption));
     }
 }

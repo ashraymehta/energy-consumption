@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toMap;
+
 @Service
 public class CounterConsumptionService {
 
@@ -27,11 +29,18 @@ public class CounterConsumptionService {
 
     public Collection<VillageConsumption> calculateVillageConsumptions(Date from) {
         final var allCounterConsumptionStatistics = counterConsumptionRepository.findCounterConsumptionStatistics(from);
-        return allCounterConsumptionStatistics.stream()
+        final var nonUniqueVillageConsumptions = allCounterConsumptionStatistics.stream()
                 .map(counterConsumptionStatistics -> {
                     final var counterId = counterConsumptionStatistics.getCounterId();
                     final var counter = counterGateway.getCounter(counterId);
                     return new VillageConsumption(counter.getVillageName(), counterConsumptionStatistics.getEnergyConsumed());
                 }).collect(Collectors.toSet());
+
+        return nonUniqueVillageConsumptions.stream().collect(toMap(VillageConsumption::getVillageName, consumption -> consumption,
+                (aVillageConsumption, anotherVillageConsumption) -> {
+                    final var totalConsumption = aVillageConsumption.getConsumption() + anotherVillageConsumption.getConsumption();
+                    return new VillageConsumption(aVillageConsumption.getVillageName(), totalConsumption);
+                }))
+                .values();
     }
 }
