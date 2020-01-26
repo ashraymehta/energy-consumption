@@ -27,7 +27,7 @@ public class CounterConsumptionService {
 
     public VillageConsumptions calculateVillageConsumptions(Date from) {
         final var allCounterConsumptionStatistics = counterConsumptionRepository.findCounterConsumptionStatistics(from);
-        final var villageConsumptions = allCounterConsumptionStatistics.stream()
+        final var villageConsumptions = allCounterConsumptionStatistics.parallelStream()
                 .map(counterConsumptionStatistics -> {
                     final var counterId = counterConsumptionStatistics.getCounterId();
                     final var counter = counterGateway.getCounter(counterId);
