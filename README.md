@@ -1,6 +1,6 @@
 # Energy Consumption
 
-![Build Status](https://img.shields.io/travis/ashraymehta/energy-consumption)
+[![Build Status](https://travis-ci.org/ashraymehta/energy-consumption.svg?branch=master)](https://travis-ci.org/ashraymehta/energy-consumption)
 
 Energy Consumption is a Java application to collect data about energy consumption from different villages.
 
