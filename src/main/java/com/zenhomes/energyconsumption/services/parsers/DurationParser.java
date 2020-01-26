@@ -6,7 +6,10 @@ import java.time.Duration;
 
 @Component
 public class DurationParser {
-    public Duration parse(String duration) {
-        return null;
+    private static final String PERIOD_PREFIX_ISO_8601 = "P";
+    private static final String TIME_PREFIX_ISO_8601 = "T";
+
+    public Duration parse(String timeDurationInText) {
+        return Duration.parse(PERIOD_PREFIX_ISO_8601 + TIME_PREFIX_ISO_8601 + timeDurationInText);
     }
 }
