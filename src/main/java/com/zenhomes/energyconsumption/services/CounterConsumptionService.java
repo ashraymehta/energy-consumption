@@ -3,14 +3,12 @@ package com.zenhomes.energyconsumption.services;
 import com.zenhomes.energyconsumption.gateways.CounterGateway;
 import com.zenhomes.energyconsumption.models.CounterConsumption;
 import com.zenhomes.energyconsumption.models.dto.VillageConsumption;
+import com.zenhomes.energyconsumption.models.dto.VillageConsumptions;
 import com.zenhomes.energyconsumption.repositories.CounterConsumptionRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toMap;
 
 @Service
 public class CounterConsumptionService {
@@ -27,20 +25,15 @@ public class CounterConsumptionService {
         return counterConsumptionRepository.insert(counterConsumption);
     }
 
-    public Collection<VillageConsumption> calculateVillageConsumptions(Date from) {
+    public VillageConsumptions calculateVillageConsumptions(Date from) {
         final var allCounterConsumptionStatistics = counterConsumptionRepository.findCounterConsumptionStatistics(from);
-        final var nonUniqueVillageConsumptions = allCounterConsumptionStatistics.stream()
+        final var villageConsumptions = allCounterConsumptionStatistics.stream()
                 .map(counterConsumptionStatistics -> {
                     final var counterId = counterConsumptionStatistics.getCounterId();
                     final var counter = counterGateway.getCounter(counterId);
                     return new VillageConsumption(counter.getVillageName(), counterConsumptionStatistics.getEnergyConsumed());
-                }).collect(Collectors.toSet());
+                }).collect(Collectors.toCollection(VillageConsumptions::new));
 
-        return nonUniqueVillageConsumptions.stream().collect(toMap(VillageConsumption::getVillageName, consumption -> consumption,
-                (aVillageConsumption, anotherVillageConsumption) -> {
-                    final var totalConsumption = aVillageConsumption.getConsumption() + anotherVillageConsumption.getConsumption();
-                    return new VillageConsumption(aVillageConsumption.getVillageName(), totalConsumption);
-                }))
-                .values();
+        return villageConsumptions.distinctByVillageNames();
     }
 }

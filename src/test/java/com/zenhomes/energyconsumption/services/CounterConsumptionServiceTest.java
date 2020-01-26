@@ -17,6 +17,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -91,6 +92,7 @@ class CounterConsumptionServiceTest {
 //      then
         final var anExpectedVillageConsumption = new VillageConsumption(aVillageName, 3500.00);
         final var anotherExpectedVillageConsumption = new VillageConsumption(anotherVillageName, 5000.00);
+        assertThat(villageConsumptions, hasSize(2));
         assertThat(villageConsumptions, containsInAnyOrder(anExpectedVillageConsumption,
                 anotherExpectedVillageConsumption));
     }
