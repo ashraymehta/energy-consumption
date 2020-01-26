@@ -2,7 +2,7 @@ package com.zenhomes.energyconsumption.repositories;
 
 import com.zenhomes.energyconsumption.models.BaseModel;
 import com.zenhomes.energyconsumption.models.CounterConsumption;
-import com.zenhomes.energyconsumption.models.dto.ConsumptionAggregationDTO;
+import com.zenhomes.energyconsumption.models.dto.CounterConsumptionStatistics;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -24,13 +24,14 @@ public class CounterConsumptionRepository {
         return this.mongoTemplate.insert(counterConsumption);
     }
 
-    public List<ConsumptionAggregationDTO> findConsumptionPerCounter(Date from) {
+    public List<CounterConsumptionStatistics> findCounterConsumptionStatistics(Date from) {
         final var filterCriteria = where(BaseModel.DatabaseFields.CREATED_AT).gte(from);
         final var aggregation = newAggregation(match(filterCriteria), group(CounterConsumption.DatabaseFields.COUNTER_ID)
-                .sum(CounterConsumption.DatabaseFields.AMOUNT).as(ConsumptionAggregationDTO.ClassFields.TOTAL)
-                .first(CounterConsumption.DatabaseFields.COUNTER_ID).as(ConsumptionAggregationDTO.ClassFields.COUNTER_ID));
+                .sum(CounterConsumption.DatabaseFields.AMOUNT).as(CounterConsumptionStatistics.ClassFields.ENERGY_CONSUMED)
+                .first(CounterConsumption.DatabaseFields.COUNTER_ID).as(CounterConsumptionStatistics.ClassFields.COUNTER_ID));
 
-        return this.mongoTemplate.aggregate(aggregation, CounterConsumption.class, ConsumptionAggregationDTO.class)
+//      TODO - Explore using Jackson to form the CounterConsumptionStatistics
+        return this.mongoTemplate.aggregate(aggregation, CounterConsumption.class, CounterConsumptionStatistics.class)
                 .getMappedResults();
     }
 }

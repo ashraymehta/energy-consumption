@@ -58,14 +58,14 @@ class CounterConsumptionRepositoryTest extends AbstractRepositoryTest {
         counterConsumptionRepository.insert(new CounterConsumption("2", 129.99));
 
 //      when
-        final var consumptionPerCounter = counterConsumptionRepository.findConsumptionPerCounter(startDate);
+        final var counterConsumptionStatistics = counterConsumptionRepository.findCounterConsumptionStatistics(startDate);
 
 //      then
-        assertThat(consumptionPerCounter, hasSize(2));
+        assertThat(counterConsumptionStatistics, hasSize(2));
 
-        final var consumptionOfFirstCounter = consumptionPerCounter.get(0);
-        final var consumptionOfSecondCounter = consumptionPerCounter.get(1);
-        assertThat(consumptionOfFirstCounter.getTotal(), is(equalTo(1_000.00)));
-        assertThat(consumptionOfSecondCounter.getTotal(), is(equalTo(129.99)));
+        final var consumptionOfFirstCounter = counterConsumptionStatistics.get(0);
+        final var consumptionOfSecondCounter = counterConsumptionStatistics.get(1);
+        assertThat(consumptionOfFirstCounter.getEnergyConsumed(), is(equalTo(1_000.00)));
+        assertThat(consumptionOfSecondCounter.getEnergyConsumed(), is(equalTo(129.99)));
     }
 }
