@@ -47,7 +47,7 @@ class CounterConsumptionRepositoryTest extends AbstractRepositoryTest {
     }
 
     @Test
-    void shouldFindSumOfConsumptionForAllCountersFromTheProvidedTimePeriod() throws InterruptedException {
+    void shouldFindSumOfConsumptionForAllCountersFromTheProvidedTimePeriod() {
 //       given
         counterConsumptionRepository.insert(new CounterConsumption("not-be-considered-counter", 10_000.21));
 
